@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samba - Protocole de Partage de Fichiers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .presentation {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .slide {
+            display: none;
+            min-height: 600px;
+            padding: 60px 80px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .slide-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        .slide-content {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .slide-content ul {
+            margin-left: 30px;
+            margin-top: 20px;
+        }
+        
+        .slide-content li {
+            margin: 15px 0;
+        }
+        
+        .slide-content strong {
+            color: #0066cc;
+        }
+        
+        .presenter-info {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            font-size: 1.3em;
+        }
+        
+        .presenter-info h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
+        
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #004499;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            font-weight: bold;
+            color: #0066cc;
+            font-size: 1.1em;
+        }
+        
+        .architecture-box {
+            background: #f0f4ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .architecture-box strong {
+            display: block;
+            margin-bottom: 10px;
+            color: #0066cc;
+            white-space: normal;
+        }
+        
+        .timeline {
+            margin: 20px 0;
+        }
+        
+        .timeline-item {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .timeline-item:before {
+            content: "●";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-size: 1.5em;
+        }
+        
+        .timeline-item strong {
+            color: #0066cc;
+        }
+        
+        .sources {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .source-item {
+            margin: 8px 0;
+        }
+        
+        .source-item a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .source-item a:hover {
+            text-decoration: underline;
+            color: #004499;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Titre -->
+        <div class="slide active">
+            <div class="slide-title">Samba</div>
+            <div class="slide-subtitle">Protocole de Partage de Fichiers et d'Authentification Linux</div>
+            <div style="margin-top: 60px; font-size: 1.2em; color: #666;">
+                <p style="margin: 20px 0;"><strong>Implémentation libre du protocole SMB/CIFS</strong></p>
+                <p style="margin: 20px 0;">Interopérabilité entre environnements Linux/Unix et Windows</p>
+                <p style="margin: 20px 0;">Partage de fichiers, imprimantes et authentification</p>
+            </div>
+            <div class="presenter-info" style="margin-top: 80px;">
+                <h3>Stéphane de Labrusse</h3>
+                <p>Présentation technique</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Origines -->
+        <div class="slide">
+            <div class="slide-title">Origines de Samba</div>
+            <div class="slide-content">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <strong>Décembre 1991 - Janvier 1992 :</strong> Andrew Tridgell développe la première version de Samba comme étudiant en doctorat à l'Université nationale australienne
+                    </div>
+                    <div class="timeline-item">
+                        <strong>1992 :</strong> Premières releases (0.1, 0.5, 1.0), Tridgell l'appelle "Unix file server for DOS Pathworks"
+                    </div>
+                    <div class="timeline-item">
+                        <strong>Décembre 1993 :</strong> Sortie de nbserver 1.5, premier release avec support client et adoption de la GPL2
+                    </div>
+                    <div class="timeline-item">
+                        <strong>Janvier 1999 :</strong> Version 2.0.0, support authentication depuis Windows NT Primary Domain Controller
+                    </div>
+                    <div class="timeline-item">
+                        <strong>23 Septembre 2003 :</strong> Version 3.0.0, upgrade majeure avec capability de joindre Active Directory
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2006+ :</strong> Samba 4 développé pour support complet comme Active Directory Domain Controller
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2024-2025 :</strong> Samba 4.21, 4.22, 4.23 avec SMB over QUIC et monitoring Prometheus
+                    </div>
+                </div>
+                <div class="sources">
+                    <strong>Sources :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/" target="_blank">Samba Official Documentation</a></div>
+                    <div class="source-item">• <a href="https://en.wikipedia.org/wiki/Samba_(software)" target="_blank">Wikipedia - Samba (software)</a></div>
+                    <div class="source-item">• <a href="https://www.samba.org/samba/history/" target="_blank">Samba Release History</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Contexte et motivation -->
+        <div class="slide">
+            <div class="slide-title">Motivation Originelle</div>
+            <div class="slide-content">
+                <p style="margin-bottom: 20px;"><strong>Problème initial :</strong> Andrew Tridgell, étudiant en doctorat à l'ANU, ne pouvait pas utiliser simultanément le client PC-NFS et DEC Pathworks sur le même système.</p>
+                
+                <p style="margin: 20px 0;"><strong>Solution créative :</strong> Utiliser un "packet sniffer" pour analyser le protocole SMB de DEC Pathworks et l'implémenter sur Unix.</p>
+                
+                <p style="margin: 20px 0;"><strong>Découverte inattendue :</strong> Le code interopérait avec Microsoft Windows (qui utilisait également SMB), créant ainsi une solution d'interopérabilité accidentelle.</p>
+                
+                <p style="margin: 20px 0;"><strong>Clarification importante :</strong> Samba est antérieur à Windows NT (Janvier 1992 vs Août 1993). Ce n'est pas un clone Windows NT, mais une implémentation du protocole SMB d'origine.</p>
+                
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/samba/docs/myths_about_samba.html" target="_blank">Myths About Samba</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: But du service -->
+        <div class="slide">
+            <div class="slide-title">But et Objectifs de Samba</div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>Partage de fichiers :</strong> Créer des partages accessibles depuis Windows, macOS et Linux de manière transparente</li>
+                    <li><strong>Authentification :</strong> Gérer les utilisateurs et groupes, intégration complète avec Active Directory</li>
+                    <li><strong>Partage d'imprimantes :</strong> Permettre aux clients d'imprimer via le serveur Samba (CUPS)</li>
+                    <li><strong>Contrôle d'accès :</strong> Gestion fine des permissions (ACL) et des droits utilisateur</li>
+                    <li><strong>Interopérabilité :</strong> Pallier les écarts propriétaires Microsoft - Unix/Linux</li>
+                    <li><strong>Solution gratuite :</strong> Offrir une alternative open-source sous GPL aux services Windows propriétaires</li>
+                </ul>
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/" target="_blank">Samba Main Page</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Architecture -->
+        <div class="slide">
+            <div class="slide-title">Architecture de Samba</div>
+            <div class="slide-content">
+                <div class="architecture-box">
+                    <strong>Couche 1 : Protocoles Réseau</strong>
+                    SMB (Server Message Block) et CIFS (Common Internet File System) - TCP port 445, legacy NetBIOS port 139
+                </div>
+                <div class="architecture-box">
+                    <strong>Couche 2 : Démons Core</strong>
+                    <strong>smbd</strong> (services fichiers/imprimantes), <strong>nmbd</strong> (résolution NetBIOS), <strong>winbindd</strong> (authentification NT/AD)
+                </div>
+                <div class="architecture-box">
+                    <strong>Couche 3 : Gestion Utilisateurs</strong>
+                    SAM (Security Account Manager), LDAP, Active Directory complet (Samba 4), authentification Kerberos
+                </div>
+                <div class="architecture-box">
+                    <strong>Couche 4 : Partages & Ressources</strong>
+                    Partages de fichiers, support CUPS pour imprimantes, DFS (Distributed File System)
+                </div>
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/samba/docs/current/man-html/samba.7.html" target="_blank">samba.7 man page</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Composants principaux -->
+        <div class="slide">
+            <div class="slide-title">Composants Principaux</div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>smbd :</strong> Démon principal gérant connexions SMB/CIFS, partages, authentification et opérations fichiers</li>
+                    <li><strong>nmbd :</strong> Gestion du protocole NetBIOS et résolution de noms (WINS - Windows Internet Name Service)</li>
+                    <li><strong>winbindd :</strong> Passerelle entre systèmes Unix/Linux et domaines NT/Active Directory</li>
+                    <li><strong>samba-tool :</strong> Outil CLI pour gérer Samba 4 (provision AD, gestion domaines, utilisateurs)</li>
+                    <li><strong>testparm :</strong> Validation et analyse de la configuration smb.conf</li>
+                    <li><strong>net :</strong> Utilitaires réseau (gestion AD, groupes, partages, joins domaine)</li>
+                    <li><strong>pdbedit :</strong> Gestion de la base de données des utilisateurs locaux</li>
+                </ul>
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/samba/docs/current/man-html/samba.7.html" target="_blank">samba man page</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Modes de fonctionnement -->
+        <div class="slide">
+            <div class="slide-title">Modes de Fonctionnement</div>
+            <div class="slide-content">
+                <div class="architecture-box">
+                    <strong>1. Workgroup Mode (Mode Groupe de Travail)</strong>
+                    Pas de contrôle centralisé, authentification locale sur chaque machine (configuration simple)
+                </div>
+                <div class="architecture-box">
+                    <strong>2. Domain Member (Membre de Domaine)</strong>
+                    Intégration dans un domaine Active Directory existant (Windows ou Samba). Authentification centralisée.
+                </div>
+                <div class="architecture-box">
+                    <strong>3. Active Directory DC (Contrôleur de Domaine AD)</strong>
+                    Samba 4 agit comme serveur AD complet (depuis v4.0), remplaçant entièrement les services Windows
+                </div>
+                <div class="architecture-box">
+                    <strong>4. Standalone Server</strong>
+                    Serveur autonome avec gestion locale des utilisateurs, sans intégration domaine
+                </div>
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org" target="_blank">Samba3-HOWTO and Reference Guide</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Authentification -->
+        <div class="slide">
+            <div class="slide-title">Authentification : Identifier les Utilisateurs</div>
+            <div class="slide-content">
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; font-size: 1.1em;">Problème :</strong>
+                <p style="margin-bottom: 30px;">Comment vérifier qu'un utilisateur est vraiment "stephane" et pas quelqu'un d'autre ?</p>
+                
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; font-size: 1.1em;">Solution 1 : NTLM / NTLMv2 (Ancienne méthode)</strong>
+                <div class="architecture-box">
+                    <p style="margin: 0; line-height: 1.6;">L'utilisateur envoie son mot de passe <strong>haché</strong> (pas le mot de passe en clair). Le serveur compare avec le hash stocké.</p>
+                    <ul style="margin-top: 10px;">
+                        <li>Rapide mais moins sûr</li>
+                        <li>Utilisé par les vieux systèmes Windows (XP, Server 2003)</li>
+                    </ul>
+                </div>
+                
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; font-size: 1.1em;">Solution 2 : Kerberos (Méthode moderne recommandée)</strong>
+                <div class="architecture-box">
+                    <ul style="margin: 0;">
+                        <li>L'utilisateur demande un "ticket" au serveur avec son mot de passe</li>
+                        <li>Le serveur génère un ticket sécurisé</li>
+                        <li>L'utilisateur utilise ce ticket pour accéder à tous les services sans retaper son mot de passe (Single Sign-On)</li>
+                        <li>Plus sûr et pratique</li>
+                        <li>Standard des environnements professionnels (Active Directory)</li>
+                    </ul>
+                </div>
+                
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://wiki.samba.org/" target="_blank">Samba Security Documentation</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Annuaires et Répertoires -->
+        <div class="slide">
+            <div class="slide-title">Annuaires : Où Stocker les Utilisateurs ?</div>
+            <div class="slide-content">
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; font-size: 1.1em;">Problème :</strong>
+                <p style="margin-bottom: 30px;">Comment stocker centralisé tous les utilisateurs, groupes et ordinateurs du réseau ?</p>
+                
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; font-size: 1.1em;">Solution 1 : LDAP (Lightweight Directory Access Protocol)</strong>
+                <div class="architecture-box">
+                    <p style="margin: 0 0 10px 0;">Protocole pour stocker et chercher utilisateurs, groupes, ordinateurs de manière centralisée. C'est l'annuaire téléphonique du réseau : on le consulte pour trouver qui est qui.</p>
+                </div>
+                
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; margin-top: 30px; font-size: 1.1em;">Solution 2 : Active Directory (AD)</strong>
+                <div class="architecture-box">
+                    <p style="margin: 0 0 10px 0;">Base de données complète basée sur LDAP qui gère :</p>
+                    <ul style="margin: 5px 0;">
+                        <li>Utilisateurs et groupes</li>
+                        <li>Ordinateurs du domaine</li>
+                        <li>Permissions et stratégies</li>
+                        <li>Authentification centralisée</li>
+                    </ul>
+                    <p style="margin: 10px 0 0 0;">Samba 4 = Active Directory complet sur Linux (gratuit !)</p>
+                </div>
+                
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://wiki.samba.org/" target="_blank">Samba Security Documentation</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Contrôle d'Accès et Protection -->
+        <div class="slide">
+            <div class="slide-title">Contrôle d'Accès : Qui Peut Faire Quoi ?</div>
+            <div class="slide-content">
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; font-size: 1.1em;">Problème :</strong>
+                <p style="margin-bottom: 30px;">Comment s'assurer que seules les bonnes personnes accèdent à certains fichiers ou services ?</p>
+                
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; font-size: 1.1em;">Solution 1 : ACL (Access Control List)</strong>
+                <div class="architecture-box">
+                    <p style="margin: 0 0 10px 0;"><strong>Liste fine des permissions</strong> par utilisateur/groupe pour chaque fichier ou dossier.</p>
+                    <p style="margin: 10px 0;"><strong>Exemples :</strong></p>
+                    <ul style="margin: 5px 0;">
+                        <li>"stephane peut lire le dossier IT"</li>
+                        <li>"IT_Team peut modifier les fichiers"</li>
+                        <li>"guests lecture seule"</li>
+                    </ul>
+                </div>
+                
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px; margin-top: 30px; font-size: 1.1em;">Solution 2 : SMB3 Chiffrement + Signature</strong>
+                <div class="architecture-box">
+                    <p style="margin: 0 0 10px 0;"><strong>Les données en transit sont protégées :</strong></p>
+                    <ul style="margin: 5px 0;">
+                        <li><strong>Chiffrées</strong> → personne ne peut lire les données</li>
+                        <li><strong>Signées</strong> → personne ne peut modifier les données</li>
+                    </ul>
+                </div>
+                
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://wiki.samba.org/" target="_blank">Samba Security Documentation</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Développements actuels (2024-2025) -->
+        <div class="slide">
+            <div class="slide-title">Développements Actuels (2024-2025)</div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>Samba 4.23 (Septembre 2025) :</strong> Dernière version stable avec SMB over QUIC complet</li>
+                    <li><strong>SMB over QUIC :</strong> Protocole QUIC pour accès sécurisé à Samba via Internet (VPN alternatif)</li>
+                    <li><strong>Prometheus Monitoring :</strong> smb_prometheus_endpoint pour intégration dashboards Prometheus/Grafana</li>
+                    <li><strong>Gestion de Comptes de Service :</strong> Support gMSA (Group Managed Service Accounts) pour Functional Level 2012+</li>
+                    <li><strong>Optimisations :</strong> Meilleure scalabilité, gestion grands environnements (Ceph FileSystem, GlusterFS)</li>
+                    <li><strong>Sécurité renforcée :</strong> Corrections continues - Samba 4.23.3 (novembre 2025), 4.22.6 (octobre 2025), 4.21.10 (novembre 2025)</li>
+                    <li><strong>Support IPv6 :</strong> Migration continue vers infrastructure moderne double-stack</li>
+                </ul>
+                <div class="sources">
+                    <strong>Sources :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/samba/history/" target="_blank">Samba Release History</a></div>
+                    <div class="source-item">• <a href="https://samba.plus/blog/releases" target="_blank">SAMBA+ Release Notes</a></div>
+                    <div class="source-item">• <a href="https://www.samba.org/samba/history/samba-4.23.3.html" target="_blank">Samba 4.23.3 Release Notes</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Cas d'usage -->
+        <div class="slide">
+            <div class="slide-title">Cas d'Usage Principaux</div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>PME / Petites entreprises :</strong> Remplacer serveurs Windows coûteux par Samba sur Linux économique</li>
+                    <li><strong>Environnements mixtes :</strong> Intégrer Linux/Unix dans domaines Windows existants seamlessly</li>
+                    <li><strong>Serveurs de fichiers :</strong> NAS performant et économique pour partage centralisé et synchronisation</li>
+                    <li><strong>Domaines AD entièrement Linux :</strong> Samba 4 remplace complètement l'infrastructure Microsoft (gratuit)</li>
+                    <li><strong>Migration Windows → Linux :</strong> Faciliter la transition de parcs informatiques progressivement</li>
+                    <li><strong>Environnements hétérogènes :</strong> Cohabitation Windows, Mac, Linux sans friction ni couches supplémentaires</li>
+                    <li><strong>Solutions cloud/VPS :</strong> Lightweight, faible consommation ressources vs solutions Windows</li>
+                </ul>
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/" target="_blank">Samba Main Documentation</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Avantages & Limitations -->
+        <div class="slide">
+            <div class="slide-title">Avantages & Limitations</div>
+            <div class="slide-content">
+                <strong style="color: #0066cc; display: block; margin-bottom: 20px;">✓ Avantages</strong>
+                <ul style="margin-bottom: 30px;">
+                    <li>Gratuit et open-source sous GPL - aucun coût de licence</li>
+                    <li>Compatibilité excellente avec tous clients Windows (moderne + legacy)</li>
+                    <li>Faible consommation de ressources CPU/RAM vs Windows Server</li>
+                    <li>Très stable, fiable, production-ready depuis 30+ ans</li>
+                    <li>Communauté active, support professionnel disponible (SerNet SAMBA+)</li>
+                    <li>Peut remplacer entièrement Active Directory Microsoft</li>
+                </ul>
+                <strong style="color: #004499; display: block; margin-bottom: 20px;">⚠ Limitations</strong>
+                <ul>
+                    <li>Configuration complexe pour débutants (fichier smb.conf)</li>
+                    <li>Courbe d'apprentissage importante (administration Linux requise)</li>
+                    <li>Quelques fonctionnalités AD très avancées moins développées que Microsoft</li>
+                    <li>Documentation parfois fragmentée/obsolète pour cas complexes</li>
+                </ul>
+                <div class="sources">
+                    <strong>Source :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/samba/docs/" target="_blank">Samba Documentation</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Conclusion -->
+        <div class="slide">
+            <div class="slide-title">Conclusion</div>
+            <div class="slide-content">
+                <p style="margin: 20px 0; font-size: 1.1em;">Samba est <strong>l'élément clé</strong> pour :</p>
+                <ul style="margin-bottom: 40px;">
+                    <li>Intégrer Linux dans les environnements Windows existants</li>
+                    <li>Réduire drastiquement les coûts d'infrastructure IT</li>
+                    <li>Créer des environnements IT hétérogènes, modernes et libres</li>
+                    <li>Faciliter les migrations OS de Windows vers Linux</li>
+                </ul>
+                <p style="margin: 20px 0; font-size: 1.05em; color: #0066cc;"><strong>Samba 4 = Remplacement complet et fiable d'Active Directory Microsoft sur Linux</strong></p>
+                <p style="margin: 20px 0; font-size: 0.95em; color: #666;">30 ans d'évolution, millions de déploiements, protocole SMB standard industriel</p>
+                
+                <div class="sources" style="margin-top: 30px;">
+                    <strong>Sources principales :</strong>
+                    <div class="source-item">• <a href="https://www.samba.org/" target="_blank">www.samba.org</a> - Site officiel Samba</div>
+                    <div class="source-item">• <a href="https://wiki.samba.org/" target="_blank">wiki.samba.org</a> - Wiki documentation complète</div>
+                    <div class="source-item">• <a href="https://tools.ietf.org/html/rfc1001" target="_blank">RFC 1001/1002</a> - Standards NetBIOS</div>
+                    <div class="source-item">• <a href="https://samba.plus/" target="_blank">samba.plus</a> - Support commercial SerNet</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contrôles -->
+        <div class="controls">
+            <button id="prevBtn" onclick="changeSlide(-1)">← Précédent</button>
+            <span class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">12</span></span>
+            <button id="nextBtn" onclick="changeSlide(1)">Suivant →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+
+        // Navigation au clavier
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
