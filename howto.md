@@ -9,12 +9,12 @@ Guide minimal pour installer et configurer Samba avec un partage personnalisé.
 ### Debian/Ubuntu
 ```bash
 sudo apt update
-sudo apt install samba
+sudo apt install samba smbclient
 ```
 
 ### CentOS/RedHat
 ```bash
-sudo dnf install samba
+sudo dnf install samba smbclient
 ```
 
 ---
