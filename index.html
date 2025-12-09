@@ -205,6 +205,7 @@
             <div class="presenter-info" style="margin-top: 80px;">
                 <h3>Stéphane de Labrusse</h3>
                 <p>Présentation technique</p>
+                <p style="margin-top: 20px; font-size: 0.9em;"><a href="https://stephdl.github.io/samba_presentation/" target="_blank" style="color: white; text-decoration: underline;">https://stephdl.github.io/samba_presentation/</a></p>
             </div>
         </div>
 
@@ -334,8 +335,9 @@
             <div class="slide-title">Modes de Fonctionnement</div>
             <div class="slide-content">
                 <div class="architecture-box">
-                    <strong>1. Workgroup Mode (Mode Groupe de Travail)</strong>
+                    <strong>1. Standalone Server ou Workgroup Mode (Mode Groupe de Travail)</strong>
                     Pas de contrôle centralisé, authentification locale sur chaque machine (configuration simple)
+                    Serveur autonome avec gestion locale des utilisateurs, sans intégration domaine
                 </div>
                 <div class="architecture-box">
                     <strong>2. Domain Member (Membre de Domaine)</strong>
@@ -344,10 +346,6 @@
                 <div class="architecture-box">
                     <strong>3. Active Directory DC (Contrôleur de Domaine AD)</strong>
                     Samba 4 agit comme serveur AD complet (depuis v4.0), remplaçant entièrement les services Windows
-                </div>
-                <div class="architecture-box">
-                    <strong>4. Standalone Server</strong>
-                    Serveur autonome avec gestion locale des utilisateurs, sans intégration domaine
                 </div>
                 <div class="sources">
                     <strong>Source :</strong>
