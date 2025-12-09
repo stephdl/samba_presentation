@@ -8,13 +8,15 @@ Guide minimal pour installer et configurer Samba avec un partage personnalisé.
 
 ### Debian/Ubuntu
 ```bash
-sudo apt update
-sudo apt install samba smbclient
+su -
+apt update
+apt install samba smbclient
 ```
 
 ### CentOS/RedHat
 ```bash
-sudo dnf install samba smbclient
+su -
+dnf install samba smbclient
 ```
 
 ---
@@ -22,13 +24,13 @@ sudo dnf install samba smbclient
 ## 2. Démarrer et Activer Samba
 
 ```bash
-sudo systemctl start smbd nmbd
-sudo systemctl enable smbd nmbd
+systemctl start smbd nmbd
+systemctl enable smbd nmbd
 ```
 
 Vérifier :
 ```bash
-sudo systemctl status smbd nmbd
+systemctl status smbd nmbd
 ```
 
 ---
@@ -36,8 +38,8 @@ sudo systemctl status smbd nmbd
 ## 3. Créer un Utilisateur
 
 ```bash
-sudo useradd -m -s /usr/sbin/nologin user1
-sudo smbpasswd -a user1
+useradd -m -s /usr/sbin/nologin user1
+smbpasswd -a user1
 ```
 
 Entrez le mot de passe deux fois.
@@ -47,8 +49,8 @@ Entrez le mot de passe deux fois.
 ## 4. Créer le Dossier Partagé
 
 ```bash
-sudo mkdir -p /srv/samba/shared
-sudo chmod 755 /srv/samba/shared
+mkdir -p /srv/samba/shared
+chmod 755 /srv/samba/shared
 ```
 
 ---
@@ -58,7 +60,7 @@ sudo chmod 755 /srv/samba/shared
 Gardez votre configuration existante, ajoutez seulement à la fin :
 
 ```bash
-sudo nano /etc/samba/smb.conf
+nano /etc/samba/smb.conf
 ```
 
 Allez à la fin du fichier et ajoutez :
@@ -107,14 +109,14 @@ Allez à la fin du fichier et ajoutez :
 ## 6. Valider et Redémarrer
 
 ```bash
-sudo testparm
+testparm
 ```
 
 Vous devriez voir : `Loaded services file OK.`
 
 Redémarrer :
 ```bash
-sudo systemctl restart smbd nmbd
+systemctl restart smbd nmbd
 ```
 
 ---
