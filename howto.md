@@ -92,7 +92,10 @@ Allez à la fin du fichier et ajoutez :
     
     # groupes autorisés
     valid groups = samba_group
-    
+
+    # forcer le groupe pour eviter des conflits de permissions
+    force group = samba_group
+
     # Permissions des fichiers créés
     create mask = 0664
     
@@ -109,6 +112,7 @@ Allez à la fin du fichier et ajoutez :
 | `browseable` | yes | Visible dans le navigateur réseau |
 | `read only` | no | Lecture ET écriture autorisées |
 | `valid groups` | samba_group | Seul les mebres de samba_group peuvent y acceder|
+| ` force group` | samba_group | le groupe sera forcé sur samba_group pour permette a tous les membres d'editer les fichiers et repertoires|
 | `create mask` | 0664 | rw-rw--r-- (permissions des fichiers) |
 | `directory mask` | 0775 | rwxrwxr-x (permissions des dossiers) |
 
@@ -182,6 +186,7 @@ Voici à quoi ressemble votre fichier avec le nouveau partage :
     browseable = yes
     read only = no
     valid groups = samba_group
+    force group = samba_group
     create mask = 0664
     directory mask = 0775
 ```
