@@ -90,8 +90,8 @@ Allez à la fin du fichier et ajoutez :
     # Autoriser la lecture ET l'écriture
     read only = no
     
-    # Utilisateurs autorisés
-    valid users = user1
+    # groupes autorisés
+    valid groups = samba_group
     
     # Permissions des fichiers créés
     create mask = 0664
@@ -108,9 +108,9 @@ Allez à la fin du fichier et ajoutez :
 | `path` | /srv/samba/shared | Chemin du dossier à partager |
 | `browseable` | yes | Visible dans le navigateur réseau |
 | `read only` | no | Lecture ET écriture autorisées |
-| `valid users` | user1 | Seul user1 peut accéder |
-| `create mask` | 0644 | rw-r--r-- (permissions des fichiers) |
-| `directory mask` | 0755 | rwxr-xr-x (permissions des dossiers) |
+| `valid groups` | samba_group | Seul les mebres de samba_group peuvent y acceder|
+| `create mask` | 0664 | rw-rw--r-- (permissions des fichiers) |
+| `directory mask` | 0775 | rwxrwxr-x (permissions des dossiers) |
 
 ---
 
@@ -181,7 +181,7 @@ Voici à quoi ressemble votre fichier avec le nouveau partage :
     path = /srv/samba/shared
     browseable = yes
     read only = no
-    valid users = user1
+    valid groups = samba_group
     create mask = 0664
     directory mask = 0775
 ```
