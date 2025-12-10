@@ -44,13 +44,21 @@ smbpasswd -a user1
 
 Entrez le mot de passe deux fois.
 
+Ajouter l'utilisateur dans un groupe
+```bash
+groupadd samba_group
+usermod -aG samba_group user1
+```
+
 ---
 
 ## 4. Créer le Dossier Partagé
 
+Donner les permissions au groupes samba_group
 ```bash
 mkdir -p /srv/samba/shared
-chmod 755 /srv/samba/shared
+chown root:samba_group -R /srv/samba/shared
+chmod 775 -R /srv/samba/shared
 ```
 
 ---
@@ -86,10 +94,10 @@ Allez à la fin du fichier et ajoutez :
     valid users = user1
     
     # Permissions des fichiers créés
-    create mask = 0644
+    create mask = 0664
     
     # Permissions des dossiers créés
-    directory mask = 0755
+    directory mask = 0775
 ```
 
 **Explication des paramètres clés :**
@@ -174,8 +182,8 @@ Voici à quoi ressemble votre fichier avec le nouveau partage :
     browseable = yes
     read only = no
     valid users = user1
-    create mask = 0644
-    directory mask = 0755
+    create mask = 0664
+    directory mask = 0775
 ```
 
 C'est prêt ! 🎯
