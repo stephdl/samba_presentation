@@ -10,7 +10,7 @@ Guide minimal pour installer et configurer Samba avec un partage personnalisé.
 ```bash
 su -
 apt update
-apt install samba smbclient
+apt install samba smbclient -y
 ```
 
 ### CentOS/RedHat
